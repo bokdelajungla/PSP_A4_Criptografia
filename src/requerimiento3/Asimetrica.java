@@ -61,10 +61,10 @@ public class Asimetrica {
 						break;
 					
 					case 3:
-						if (bytesMensajeDescifrado != null) {
-							System.out.println("Mensaje Descifrado: " + new String(bytesMensajeDescifrado));
+						if (bytesMensajeCifrado != null) {
+							System.out.println("Mensaje Cifrado: " + new String(bytesMensajeCifrado));
 						} else if (so != null) {
-							System.out.println("Mensaje Descifrado: " + new String(cocheDes.toString()));
+							System.out.println("Mensaje Cifrado: " + new String());
 						}else {
 							System.out.println("No hay nada cifrado");
 						}

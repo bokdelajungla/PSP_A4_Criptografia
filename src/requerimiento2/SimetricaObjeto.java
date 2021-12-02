@@ -21,7 +21,6 @@ public class SimetricaObjeto {
 	
 	Scanner sc = new Scanner(System.in);
 	boolean exit = false;
-	boolean done = false;
 	int numero = 0;
 	String data = null;
 	byte[] bytesMensajeDescifrado = null;
@@ -44,6 +43,7 @@ public class SimetricaObjeto {
 			numero = Integer.parseInt(sc.nextLine());
 				switch(numero){
 				case 1:
+					System.out.println("Ha salido");
 					exit = true;
 					break;			
 				case 2:
@@ -52,18 +52,14 @@ public class SimetricaObjeto {
 					cifrador = Cipher.getInstance("AES");
 					cifrador.init(Cipher.ENCRYPT_MODE, claveSecreta);
 					byte[] bytesMensajeOriginal = data.getBytes();
-					System.out.println("Paso 5.1: Ciframos el mensaje original");
 					 bytesMensajeCifrado = cifrador.doFinal(bytesMensajeOriginal);
 					String mensajeCifrado = new String(bytesMensajeCifrado);
-					done = true;
 					break;
 				
 				case 3:
-					if (bytesMensajeDescifrado != null) {
-						System.out.println("Mensaje Descifrado: " + new String(bytesMensajeDescifrado));
+					if (bytesMensajeCifrado != null) {
+						System.out.println("Mensaje Cifrado: " + new String(bytesMensajeCifrado));
 					} else if (so != null) {
-						System.out.println("Mensaje Descifrado: " + new String(cocheDes.toString()));
-					}else {
 						System.out.println("No hay nada cifrado");
 					}
 					break;
@@ -71,13 +67,15 @@ public class SimetricaObjeto {
 					if(bytesMensajeCifrado != null) {
 						cifrador.init(Cipher.DECRYPT_MODE, claveSecreta);
 						bytesMensajeDescifrado = cifrador.doFinal(bytesMensajeCifrado);
-						System.out.println("Descifrado!");
+						System.out.println("Mensaje Descifrado: " + new String(bytesMensajeDescifrado));
+						bytesMensajeCifrado = null;
 					} else if (so != null) {
 						cifrador.init(Cipher.DECRYPT_MODE, claveSecreta);
 						cocheDes = (Coche)so.getObject(cifrador);
-						System.out.println("Descifrado!");
+						System.out.println("Coche Descifrado: " + new String(cocheDes.toString()));
+						so = null;
 					} else {
-						System.out.println("No hay nada para desencriptar");
+						System.out.println("No hay nada cifrado");
 					}
 					break;
 				case 5:

@@ -31,8 +31,6 @@ public class Simetrica {
 			System.out.println("3 - Mostrar encriptación");
 			System.out.println("4 - Desencriptar");
 			try {	
-		
-				System.out.println(claveSecreta);
 				Cipher cifrador = Cipher.getInstance("AES");
 				numero = Integer.parseInt(sc.nextLine());
 					switch(numero){
@@ -44,32 +42,25 @@ public class Simetrica {
 						data = sc.nextLine();				
 						cifrador = Cipher.getInstance("AES");
 						cifrador.init(Cipher.ENCRYPT_MODE, claveSecreta);
-						System.out.println(claveSecreta);
-						System.out.println(cifrador);
 						byte[] bytesMensajeOriginal = data.getBytes();
 						 bytesMensajeCifrado = cifrador.doFinal(bytesMensajeOriginal);
 						String mensajeCifrado = new String(bytesMensajeCifrado);
 						done = true;
 						break;
-					
 					case 3:
-						if (bytesMensajeDescifrado != null) {
-							System.out.println("Mensaje Descifrado: " + new String(bytesMensajeDescifrado));
+						if (bytesMensajeCifrado != null) {
+							System.out.println("Mensaje Cifrado: " + new String(bytesMensajeCifrado));
 						} else {
-							System.out.println("No hay nada descrifrado");
+							System.out.println("No hay nada cifrado");
 						}
 						break;
 					case 4:
 						if(bytesMensajeCifrado != null) {
-							System.out.println("llega hasta auqui");
-							System.out.println(cifrador);
-							System.out.println(claveSecreta);
 							cifrador.init(Cipher.DECRYPT_MODE, claveSecreta);
 							bytesMensajeDescifrado = cifrador.doFinal(bytesMensajeCifrado);
-							byte[] bytesMensajeDescifradoo = cifrador.doFinal(bytesMensajeCifrado);
-							System.out.println("Descifrado!");
+							System.out.println("Mensaje Descifrado: " + new String(bytesMensajeDescifrado));
 						} else {
-							System.out.println("No hay ningún mensaje");
+							System.out.println("No hay nada cifrado");
 						}
 						break;
 					default:
