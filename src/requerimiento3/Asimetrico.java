@@ -72,8 +72,10 @@ public class Asimetrico {
 						String precio = sc.nextLine();
 						coche = new Coche(matricula, marca, modelo, Float.parseFloat(precio));
 					
+						String json = gson.toJson(coche);
+						
 						cifradorCoche = new GestorCifradoAsimetrico();
-						cifradorCoche.cifrar(frase);
+						cifradorCoche.cifrar(json);
 						break;
 
 					case 6:
