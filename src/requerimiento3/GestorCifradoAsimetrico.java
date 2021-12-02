@@ -8,9 +8,8 @@ import java.security.NoSuchAlgorithmException;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
+
 
 public class GestorCifradoAsimetrico {
 
@@ -18,11 +17,12 @@ public class GestorCifradoAsimetrico {
 	private KeyPair claves; 
 	private Cipher cifrador;
 	private String algoritmo = "RSA"; //El algoritmo es RSA
+	private int modo;
 	private byte[] mensajeCifrado; 	//Almacenamos el mensaje cifrado en bytes
 									//porque el cifrador funciona con bloques de bytes
 	
 	//Constructor
-	public GestorCifradoAsimetrico() {
+	public GestorCifradoAsimetrico(int modo) {
 		try {
 			//El algoritmo es RSA
 			System.out.println("Se empleará el algoritmo: "+algoritmo);
@@ -35,6 +35,8 @@ public class GestorCifradoAsimetrico {
 			//Creamos el objeto cifrador
 			this.cifrador = Cipher.getInstance(algoritmo);
 			System.out.println("Cifrador/descifrador creado");
+			//Asignamos el modo de cifrado: Confidencialidad o Autenticidad
+			this.modo = modo;
 		
 		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
@@ -55,15 +57,29 @@ public class GestorCifradoAsimetrico {
 	 */
 	public void cifrar (String frase) {
 		try {
-			//Configuramos el cifrador para que use la clave pública
-			//para encriptar
-			cifrador.init(Cipher.ENCRYPT_MODE, claves.getPublic());
-			System.out.println("Cifrador configurado para encriptar con clave pública "+algoritmo);				
-			//El cifrador trabaja con bytes, lo convertimos
-			byte[] bytesFrase = frase.getBytes();
-			System.out.println("Cifrando el mensaje original");
-			//El cifrador devuelve una cadena de bytes
-			mensajeCifrado = cifrador.doFinal(bytesFrase);
+			//Confidencialidad (Cifrado PUB, descifrar con PRIV)
+			if(modo==1) {
+				//Configuramos el cifrador para que use la clave pública
+				//para encriptar
+				cifrador.init(Cipher.ENCRYPT_MODE, claves.getPublic());
+				System.out.println("Cifrador configurado para encriptar con clave Pública "+algoritmo);				
+				//El cifrador trabaja con bytes, lo convertimos
+				byte[] bytesFrase = frase.getBytes();
+				System.out.println("Cifrando el mensaje original");
+				//El cifrador devuelve una cadena de bytes
+				mensajeCifrado = cifrador.doFinal(bytesFrase);
+			}
+			else {
+				//Configuramos el cifrador para que use la clave privada
+				//para encriptar
+				cifrador.init(Cipher.ENCRYPT_MODE, claves.getPrivate());
+				System.out.println("Cifrador configurado para encriptar con clave Privada "+algoritmo);				
+				//El cifrador trabaja con bytes, lo convertimos
+				byte[] bytesFrase = frase.getBytes();
+				System.out.println("Cifrando el mensaje original");
+				//El cifrador devuelve una cadena de bytes
+				mensajeCifrado = cifrador.doFinal(bytesFrase);
+			}
 			
 		} catch (InvalidKeyException e) {
 			// TODO Auto-generated catch block
@@ -83,16 +99,27 @@ public class GestorCifradoAsimetrico {
 	 */
 	public String descifrar() {			
 		try {
-			System.out.println("Descifrando la frase:");
-			//Configuramos el cifrador para que use la clave privada
-			//para desencriptar.
-			cifrador.init(Cipher.DECRYPT_MODE, claves.getPrivate());
-			System.out.println("Cifrador configurado para desencriptar mediante "+algoritmo);	
-			byte[] bytesMensajeDescifrado = cifrador.doFinal(mensajeCifrado);
-			String mensajeDescifrado = new String(bytesMensajeDescifrado);
-			System.out.println("Mensaje Descifrado: " + mensajeDescifrado);
-		
-			return mensajeDescifrado;
+			if(modo==1) {
+				System.out.println("Descifrando la frase:");
+				//Configuramos el cifrador para que use la clave privada
+				//para desencriptar.
+				cifrador.init(Cipher.DECRYPT_MODE, claves.getPrivate());
+				System.out.println("Cifrador configurado para desencriptar con clave Privada "+algoritmo);	
+				byte[] bytesMensajeDescifrado = cifrador.doFinal(mensajeCifrado);
+				String mensajeDescifrado = new String(bytesMensajeDescifrado);
+				System.out.println("Mensaje Descifrado: " + mensajeDescifrado);
+				return mensajeDescifrado;
+			}
+			else {
+				//Configuramos el cifrador para que use la clave privada
+				//para desencriptar.
+				cifrador.init(Cipher.DECRYPT_MODE, claves.getPublic());
+				System.out.println("Cifrador configurado para desencriptar con clave Pública "+algoritmo);	
+				byte[] bytesMensajeDescifrado = cifrador.doFinal(mensajeCifrado);
+				String mensajeDescifrado = new String(bytesMensajeDescifrado);
+				System.out.println("Mensaje Descifrado: " + mensajeDescifrado);
+				return mensajeDescifrado;
+			}			
 			
 		} catch (InvalidKeyException e) {
 			// TODO Auto-generated catch block

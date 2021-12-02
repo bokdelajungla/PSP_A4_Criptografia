@@ -1,6 +1,7 @@
 package requerimiento2;
 
 import com.google.gson.Gson;
+
 import java.lang.NumberFormatException;
 import java.util.Scanner;
 
@@ -83,26 +84,31 @@ public class Simetrico2 {
 						String modelo = sc.nextLine();
 						System.out.println("Precio:");
 						String precio = sc.nextLine();
-						coche = new Coche(matricula, marca, modelo, Float.parseFloat(precio));
-					
-						System.out.println("Elija el Algortimo simétrico de cifrado:");
-						System.out.println("1 - DES");
-						System.out.println("2 - AES");
-						algoritmo = Integer.parseInt(sc.nextLine());
 						
-						String json = gson.toJson(coche);
+						try {
+							coche = new Coche(matricula, marca, modelo, Float.parseFloat(precio));
 						
-						if (algoritmo == 1) {
-							cifradorCoche = new GestorCifrado("DES");
-							cifradorCoche.cifrar(json);	
+							System.out.println("Elija el Algortimo simétrico de cifrado:");
+							System.out.println("1 - DES");
+							System.out.println("2 - AES");
+							algoritmo = Integer.parseInt(sc.nextLine());
+							
+							String json = gson.toJson(coche);
+							
+							if (algoritmo == 1) {
+								cifradorCoche = new GestorCifrado("DES");
+								cifradorCoche.cifrar(json);	
+							}
+							else if(algoritmo == 2) {
+								cifradorCoche = new GestorCifrado("AES");
+								cifradorCoche.cifrar(json);
+							}
+							else {
+								System.out.println("Opción no válida. Esciba 1 o 2");
+							}
+						} catch (MatriculaNoValida e) {
+							System.out.println(e.getMessage());
 						}
-						else if(algoritmo == 2) {
-							cifradorCoche = new GestorCifrado("AES");
-							cifradorCoche.cifrar(json);
-						}
-						else {
-							System.out.println("Opción no válida. Esciba 1 o 2");
-						}						
 						break;
 
 					case 6:

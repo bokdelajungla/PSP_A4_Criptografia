@@ -1,13 +1,16 @@
 package requerimiento3;
 
 import com.google.gson.Gson;
+
 import java.lang.NumberFormatException;
 import java.util.Scanner;
 
 public class Asimetrico {
 	
+	public final static String MATTRICULA_VALIDA = "^[0-9]{4}[A-Z]{3}$";
+	
 	public static void main(String[] args) {
-		System.out.println("Bienvenido al sistema de cifrado simétrico.\nPor favor elija una opción:");
+		System.out.println("Bienvenido al sistema de cifrado Asimétrico.\nPor favor elija una opción:");
 		
 		Scanner sc = new Scanner(System.in);
 		boolean salir = false;
@@ -17,6 +20,7 @@ public class Asimetrico {
 		GestorCifradoAsimetrico cifradorCoche = null;
 		Coche coche = null;
 		Gson gson = new Gson();
+		int modo = 0;
 		
 		while(!salir) {
 			System.out.println("1 - Salir del programa");
@@ -40,8 +44,23 @@ public class Asimetrico {
 						System.out.println("Introduzca la frase a encriptar:");
 						frase = sc.nextLine();
 						
-						cifradorFrase = new GestorCifradoAsimetrico();
-						cifradorFrase.cifrar(frase);
+						System.out.println("Elija el Método de cifrado:");
+						System.out.println("1 - Confidencialidad");
+						System.out.println("2 - Autenticidad");
+						modo = Integer.parseInt(sc.nextLine());
+						
+						if (modo == 1) {
+							cifradorFrase = new GestorCifradoAsimetrico(modo);
+							cifradorFrase.cifrar(frase);
+						}
+						else if(modo == 2) {
+							cifradorFrase = new GestorCifradoAsimetrico(modo);
+							cifradorFrase.cifrar(frase);
+						}
+						else {
+							System.out.println("Opción no válida. Esciba 1 o 2");
+						}				
+
 						break;
 					
 					case 3:
@@ -70,10 +89,32 @@ public class Asimetrico {
 						String modelo = sc.nextLine();
 						System.out.println("Precio:");
 						String precio = sc.nextLine();
-						coche = new Coche(matricula, marca, modelo, Float.parseFloat(precio));
-					
-						cifradorCoche = new GestorCifradoAsimetrico();
-						cifradorCoche.cifrar(frase);
+						
+						try {
+							coche = new Coche(matricula, marca, modelo, Float.parseFloat(precio));
+							
+							System.out.println("Elija el Método de cifrado:");
+							System.out.println("1 - Confidencialidad");
+							System.out.println("2 - Autenticidad");
+							modo = Integer.parseInt(sc.nextLine());
+							
+							String json = gson.toJson(coche);
+							
+							if (modo == 1) {
+								cifradorCoche = new GestorCifradoAsimetrico(modo);
+								cifradorCoche.cifrar(json);
+							}
+							else if(modo == 2) {
+								cifradorCoche = new GestorCifradoAsimetrico(modo);
+								cifradorCoche.cifrar(json);
+							}
+							else {
+								System.out.println("Opción no válida. Esciba 1 o 2");
+							}
+							
+						}catch(MatriculaNoValida e) {
+							System.out.println(e.getMessage());
+						}
 						break;
 
 					case 6:
@@ -104,4 +145,5 @@ public class Asimetrico {
 		}
 		sc.close();
 	}
+	
 }
